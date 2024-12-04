@@ -9,83 +9,120 @@ using UnityEditor;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject[] asteroidPrefabs;
+
     public bool isGameActive = true;
     public bool waveRunning = true;
-    public TextMeshProUGUI timerText;
-    public TextMeshProUGUI breakText;
-    public float waveTime = 10.0f;
-    public float breakTime = 7.0f;
-    public float timerActive = 10;
-    public float breakTimer = 6;
-    private int spawnDelay = 1;
-    private float spawnInterval = 1;
 
+    public TextMeshProUGUI EnemiesText;
+    public TextMeshProUGUI GameOverText;
+    public TextMeshProUGUI UpgradeText;
+    public TextMeshProUGUI titleScreenText;
+    public TextMeshProUGUI GameOverDesc;
+    public Button startButton;
+    public Button restartButton;
+
+    public float waveTime = 10.0f;
+    public float timerActive = 10;
+    public float breakTimer = 7.0f;
+    private float enemiesPerWave = 3;
+    private float waveNumber = 1;
     
-    // Start is called before the first frame update
     void Start()
     {
-        
+        titleScreenText.gameObject.SetActive(true);
+        startButton.gameObject.SetActive(true);
+        Time.timeScale = 0;
+        StartCoroutine(SpawnWaves());
     }
 
-    // Update is called once per frame
     void Update()
     {
-
-        while(waveRunning == true) 
-        {
-        WaveTimer();
-        InvokeRepeating("SpawnAsteroids", spawnDelay, spawnInterval);
-        if(timerActive <= 0)
-        {
-        waveRunning = false;
-        BreakTimer();
         
+        EnemiesText.text = "Wave: " + waveNumber;
+        if(waveNumber == 10)
+        {
+            GameOver();
         }
+    }
 
-        if(breakTimer <= 0)
+    private IEnumerator SpawnWaves()
+    {
+
+    while(true) 
         {
-        waveRunning = true;
-        WaveTimer();
-
+        
+            if(waveRunning == true)
+            {
+                
+                for (int i = 0; i < enemiesPerWave; i++)
+                    {
+                        SpawnAsteroids();
+                        yield return new WaitForSeconds(1f);
+                    }
+                    
+                    yield return new WaitForSeconds(2.5f);
+                    //TODO then have the break screen pop up
+                    //TODO include a new variable called wave that increases by one everytime it runs through and then you can have it print to screen with TextMeshProUGUI
+                    
+                    enemiesPerWave += 2;
+                    UpgradeText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(7f);
+                    UpgradeText.gameObject.SetActive(false);
+                    waveNumber += 1;
+                    //TODO then have the wave ongoing screen popup
+                    //TODO add a variable check if HP == 0 so the game will use break statement to end loop
+            }
         }
-       }
-
-        
-        
     }
 
     void SpawnAsteroids()
     {
-    int asteroidIndex = Random.Range(0, asteroidPrefabs.Length);
-    Instantiate(asteroidPrefabs[asteroidIndex], GenerateRandomVector(), asteroidPrefabs[asteroidIndex].transform.rotation);
+        int asteroidIndex = Random.Range(0, asteroidPrefabs.Length);
+        Instantiate(asteroidPrefabs[asteroidIndex], GenerateRandomVector(), asteroidPrefabs[asteroidIndex].transform.rotation);
     }
 
     Vector3 GenerateRandomVector()
     {
-        float x = Random.Range(-12.5f, 12.5f);
+        float x = Random.Range(-11.5f, 11.5f);
         float y = .1f;  
         float z = 8;  
 
         return new Vector3(x, y, z);
     }
 
-    public void WaveTimer()
-    {
-            waveTime -= Time.deltaTime;
-            timerActive = Mathf.FloorToInt(waveTime);
-            timerText.text = "Wave timer: " + timerActive;
-    }
-
     public void GameOver()
     {
-        isGameActive = false;
+        GameOverText.gameObject.SetActive(true);
+        GameOverDesc.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
         Time.timeScale = 0;
+        waveNumber = 1;
     }
 
-    public void BreakTimer()
+    public void RestartGame()
     {
-            breakTime -= Time.deltaTime;
-            breakTimer = Mathf.FloorToInt(breakTime);
-            timerText.text = "Break timer: " + breakTimer;
+
+     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
     }
+
+    public void BreakOpen()
+    {
+       UpgradeText.gameObject.SetActive(true);
+    }
+
+    public void BreakClose()
+    {
+       UpgradeText.gameObject.SetActive(false);
+    }
+
+    public void StartGame() 
+    {
+       EnemiesText.gameObject.SetActive(true);
+       titleScreenText.gameObject.SetActive(false);
+       startButton.gameObject.SetActive(false);
+       Time.timeScale = 1;
+    }
+  
 }
+
