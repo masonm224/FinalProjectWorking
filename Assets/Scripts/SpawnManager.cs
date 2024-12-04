@@ -9,6 +9,7 @@ using UnityEditor;
 public class SpawnManager : MonoBehaviour
 {
     public GameObject[] asteroidPrefabs;
+    public GameObject Player;
 
     public bool isGameActive = true;
     public bool waveRunning = true;
@@ -29,6 +30,7 @@ public class SpawnManager : MonoBehaviour
     
     void Start()
     {
+        isGameActive = true;
         titleScreenText.gameObject.SetActive(true);
         startButton.gameObject.SetActive(true);
         Time.timeScale = 0;
@@ -61,15 +63,13 @@ public class SpawnManager : MonoBehaviour
                     }
                     
                     yield return new WaitForSeconds(2.5f);
-                    //TODO then have the break screen pop up
-                    //TODO include a new variable called wave that increases by one everytime it runs through and then you can have it print to screen with TextMeshProUGUI
                     
                     enemiesPerWave += 2;
                     UpgradeText.gameObject.SetActive(true);
                     yield return new WaitForSeconds(7f);
                     UpgradeText.gameObject.SetActive(false);
                     waveNumber += 1;
-                    //TODO then have the wave ongoing screen popup
+                    
                     //TODO add a variable check if HP == 0 so the game will use break statement to end loop
             }
         }
@@ -92,6 +92,8 @@ public class SpawnManager : MonoBehaviour
 
     public void GameOver()
     {
+        Player.gameObject.SetActive(false);
+        isGameActive = false;
         GameOverText.gameObject.SetActive(true);
         GameOverDesc.gameObject.SetActive(true);
         restartButton.gameObject.SetActive(true);
@@ -121,6 +123,7 @@ public class SpawnManager : MonoBehaviour
        EnemiesText.gameObject.SetActive(true);
        titleScreenText.gameObject.SetActive(false);
        startButton.gameObject.SetActive(false);
+       Player.gameObject.SetActive(true);
        Time.timeScale = 1;
     }
   
