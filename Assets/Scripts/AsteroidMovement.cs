@@ -6,6 +6,7 @@ public class AsteroidMovement : MonoBehaviour
 {
 
     public float moveSpeed = 3.5f;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -23,10 +24,13 @@ public class AsteroidMovement : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-
             Destroy(gameObject);
-
         }
-
+        
+        if (other.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+        }
     }
+
 }

@@ -9,20 +9,19 @@ public class PlayerMovement : MonoBehaviour
     public float horizontalInput;
     public float boundary = 11;
     private Vector3 originalScale;
-    SpawnManager _SpawnManager;
+    public SpawnManager XSpawnManager;
 
 
     // Start is called before the first frame update
     void Start()
     {
         originalScale = transform.localScale;
-        SpawnManager _SpawnManager = GetComponent<SpawnManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_SpawnManager.isGameActive)
+        if (XSpawnManager.isGameActive == false)
         {
         ResetSize();
         }
