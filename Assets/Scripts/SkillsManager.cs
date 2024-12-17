@@ -8,9 +8,7 @@ using UnityEditor;
 
 public class SkillsManager : MonoBehaviour
 {
-    public int governmentFunding = 0;
-
-    public TextMeshProUGUI governmentFundingText;
+    public SpawnManager SpawnManager;
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +19,14 @@ public class SkillsManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        governmentFundingText.text = "Government Funding: " + governmentFunding;
+        
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            SpawnManager.GameOver();
+        }
     }
 }
